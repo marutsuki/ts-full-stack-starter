@@ -1,0 +1,77 @@
+// --- Data Source ---
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// --- Prisma Client ---
+generator client {
+    provider = "prisma-client-js"
+    output   = "../../../apps/generated/"
+}
+
+// --- IAM ---
+
+model UserRole {
+    id   String @id @default(cuid())
+    name String @unique
+
+    user User[]
+}
+
+model User {
+    id           String @id @default(cuid())
+    email        String @unique
+    passwordHash String
+
+    // Add or remove properties as needed for your application
+    firstName     String?
+    lastName      String?
+    emailVerified Boolean   @default(false)
+    isActive      Boolean   @default(true)
+    isSuspended   Boolean   @default(false)
+    lastLoginAt   DateTime?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    deletedAt     DateTime?
+
+    userRoles               UserRole[]
+    sessions                Session[]
+    passwordResetTokens     PasswordResetToken[]
+    emailVerificationTokens EmailVerificationToken[]
+
+    // Add more properties fields as needed for your application
+    // e.g., profileImage, phoneNumber, address, etc.
+}
+
+model Session {
+    id        String   @id @default(cuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    token     String   @unique
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model PasswordResetToken {
+    id        String    @id @default(cuid())
+    userId    String
+    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    token     String    @unique
+    expiresAt DateTime
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    usedAt    DateTime?
+}
+
+model EmailVerificationToken {
+    id        String    @id @default(cuid())
+    userId    String
+    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    token     String    @unique
+    expiresAt DateTime
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    usedAt    DateTime?
+}

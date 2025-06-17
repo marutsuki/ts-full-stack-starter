@@ -1,0 +1,18 @@
+{
+  "name": "ts-full-stack-starter-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "migrate": "prisma migrate dev --name init",
+    "generate": "prisma generate"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "pg": "^8.16.0",
+    "prisma": "^6.9.0"
+  },
+  "devDependencies": {}
+}
